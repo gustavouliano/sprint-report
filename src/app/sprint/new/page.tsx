@@ -2,7 +2,7 @@
 
 import { Sprint } from "@/@types/sprint";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
 export default function Page() {
   const router = useRouter();
@@ -15,13 +15,13 @@ export default function Page() {
     setTasks([...tasks, { id: "" }]);
   };
 
-  const handleTaskChange = (index, value) => {
+  const handleTaskChange = (index: number, value: string) => {
     const updatedTasks = [...tasks];
     updatedTasks[index].id = value;
     setTasks(updatedTasks);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const newSprint: Sprint = {
       id: Date.now() + "" + Math.random(),
