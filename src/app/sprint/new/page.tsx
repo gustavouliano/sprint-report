@@ -1,6 +1,8 @@
 "use client";
 
 import { Sprint } from "@/@types/sprint";
+import { Task } from "@/@types/task";
+import { getTaskInfo } from "@/app/requests/tasks";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
@@ -9,7 +11,7 @@ export default function Page() {
   const [name, setName] = useState(""); // Nome da sprint
   const [startDate, setStartDate] = useState(""); // Data de início
   const [endDate, setEndDate] = useState(""); // Data de fim
-  const [tasks, setTasks] = useState([{ id: "" }]); // Lista de tarefas (iniciando com um campo vazio)
+  const [tasks, setTasks] = useState<Task[]>([{ id: "" }]); // Lista de tarefas (iniciando com um campo vazio)
 
   const addTaskField = () => {
     setTasks([...tasks, { id: "" }]);
@@ -21,14 +23,19 @@ export default function Page() {
     setTasks(updatedTasks);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const updatedTasks = tasks;
+    for (let i = 0; i < updatedTasks.length; i++) {
+      const info = await getTaskInfo(updatedTasks[i].id);
+      updatedTasks[i] = { ...updatedTasks[i], info };
+    }
     const newSprint: Sprint = {
       id: Date.now() + "" + Math.random(),
       name,
       startDate,
       endDate,
-      tasks,
+      tasks: updatedTasks,
     };
     const savedSprintsJson = localStorage.getItem("sprintData");
     let sprints: Sprint[] = [];

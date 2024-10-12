@@ -10,9 +10,14 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 type Props = {
   workedDays: number;
   plannedSeries: number[];
+  realizedSeries: number[];
 };
 
-const MultiLineChart = ({ workedDays, plannedSeries }: Props) => {
+const MultiLineChart = ({
+  workedDays,
+  plannedSeries,
+  realizedSeries,
+}: Props) => {
   const [workDays, setWorkDays] = useState<number[]>([]);
   const [chartData, setChartData] = useState({
     series: [
@@ -22,7 +27,7 @@ const MultiLineChart = ({ workedDays, plannedSeries }: Props) => {
       },
       {
         name: "Realizado",
-        data: [23, 32, 44, 55, 34, 40, 45, 55, 60, 3],
+        data: realizedSeries,
       },
     ],
     options: {
@@ -33,6 +38,7 @@ const MultiLineChart = ({ workedDays, plannedSeries }: Props) => {
           enabled: false,
         },
       },
+      colors: ["#FF5733", "#2E93fA"],
       dataLabels: {
         enabled: false,
       },
@@ -57,7 +63,10 @@ const MultiLineChart = ({ workedDays, plannedSeries }: Props) => {
 
   // Atualiza os dias de trabalho e a série planejada
   useEffect(() => {
-    const xWorkDays = [];
+    console.log("planned: ", plannedSeries);
+    console.log("realized: ", realizedSeries);
+
+    const xWorkDays: number[] = [];
     for (let i = 1; i <= workedDays; i++) {
       xWorkDays.push(i);
     }
@@ -69,9 +78,12 @@ const MultiLineChart = ({ workedDays, plannedSeries }: Props) => {
       series: [
         {
           name: "Planejado",
-          data: plannedSeries, // Atualizando a série planejada com os novos dados
+          data: plannedSeries,
         },
-        prevData.series[1], // Mantendo a série de "Realizado" fixa
+        {
+          name: "Realizado",
+          data: realizedSeries,
+        },
       ],
       options: {
         ...prevData.options,
@@ -80,9 +92,7 @@ const MultiLineChart = ({ workedDays, plannedSeries }: Props) => {
         },
       },
     }));
-
-    console.log("planned series:", plannedSeries);
-  }, [workedDays, plannedSeries]); // Dependências para re-executar o efeito sempre que essas props mudarem
+  }, [workedDays, plannedSeries, realizedSeries]); // Dependências para re-executar o efeito sempre que essas props mudarem
 
   return (
     <div>
