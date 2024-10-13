@@ -8,34 +8,29 @@ import { FormEvent, useState } from "react";
 
 export default function Page() {
   const router = useRouter();
-  const [name, setName] = useState(""); // Nome da sprint
-  const [startDate, setStartDate] = useState(""); // Data de início
-  const [endDate, setEndDate] = useState(""); // Data de fim
-  const [tasks, setTasks] = useState<Task[]>([{ id: "" }]); // Lista de tarefas (iniciando com um campo vazio)
-
-  const addTaskField = () => {
-    setTasks([...tasks, { id: "" }]);
-  };
-
-  const handleTaskChange = (index: number, value: string) => {
-    const updatedTasks = [...tasks];
-    updatedTasks[index].id = value;
-    setTasks(updatedTasks);
-  };
+  const [name, setName] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [taskIds, setTaskIds] = useState("");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const updatedTasks = tasks;
-    for (let i = 0; i < updatedTasks.length; i++) {
-      const info = await getTaskInfo(updatedTasks[i].id);
-      updatedTasks[i] = { ...updatedTasks[i], info };
+    const taskIdsArray = taskIds.split(",").map((id) => id.trim());
+    const tasks: Task[] = [];
+    for (const id of taskIdsArray) {
+      const info = await getTaskInfo(id);
+      tasks.push({ id, info });
     }
+    let [year, month, day] = startDate.split("-");
+    const newStartDate = `${month}-${day}-${year}`;
+    [year, month, day] = endDate.split("-");
+    const newEndDate = `${month}-${day}-${year}`;
     const newSprint: Sprint = {
       id: Date.now() + "" + Math.random(),
       name,
-      startDate,
-      endDate,
-      tasks: updatedTasks,
+      startDate: newStartDate,
+      endDate: newEndDate,
+      tasks,
     };
     const savedSprintsJson = localStorage.getItem("sprintData");
     let sprints: Sprint[] = [];
@@ -83,28 +78,17 @@ export default function Page() {
         </div>
 
         <div className="form-group">
-          <label>Tarefas da Sprint</label>
-          {tasks.map((task, index) => (
-            <div key={index} className="flex items-center mt-2">
-              <input
-                type="number"
-                placeholder="ID da tarefa"
-                className="form-control mr-2"
-                value={task.id}
-                onChange={(e) => handleTaskChange(index, e.target.value)}
-              />
-            </div>
-          ))}
-        </div>
-
-        <div>
-          <button
-            type="button"
-            className="btn btn-secondary mt-2"
-            onClick={addTaskField}
-          >
-            + Adicionar Tarefa
-          </button>
+          <label htmlFor="inputTasks">
+            IDs das Tarefas (separados por vírgula)
+          </label>
+          <input
+            type="text"
+            id="inputTasks"
+            className="form-control"
+            placeholder="Ex: 213,214,215"
+            value={taskIds}
+            onChange={(e) => setTaskIds(e.target.value)}
+          />
         </div>
         <div>
           <button type="submit" className="btn btn-primary mt-2">

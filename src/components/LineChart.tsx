@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
-// Carregamento dinâmico do componente ReactApexChart
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -13,11 +12,7 @@ type Props = {
   realizedSeries: number[];
 };
 
-const MultiLineChart = ({
-  workedDays,
-  plannedSeries,
-  realizedSeries,
-}: Props) => {
+const LineChart = ({ workedDays, plannedSeries, realizedSeries }: Props) => {
   const [workDays, setWorkDays] = useState<number[]>([]);
   const [chartData, setChartData] = useState({
     series: [
@@ -32,39 +27,46 @@ const MultiLineChart = ({
     ],
     options: {
       chart: {
-        height: 350,
+        height: 400,
         type: "line",
         zoom: {
-          enabled: false,
+          enabled: true,
         },
       },
       colors: ["#FF5733", "#2E93fA"],
       dataLabels: {
-        enabled: false,
+        enabled: true,
       },
       stroke: {
         curve: "straight",
       },
       title: {
-        text: "Product Trends by Month",
-        align: "left",
+        text: "Gráfico de Burndown",
+        align: "middle",
       },
       grid: {
         row: {
-          colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+          colors: ["#f3f3f3", "transparent"],
           opacity: 0.5,
         },
       },
       xaxis: {
         categories: workDays,
+        title: {
+          text: "Dias úteis",
+        },
+      },
+      yaxis: {
+        title: {
+          text: "Tarefas",
+        },
       },
     },
   });
 
-  // Atualiza os dias de trabalho e a série planejada
   useEffect(() => {
-    console.log("planned: ", plannedSeries);
-    console.log("realized: ", realizedSeries);
+    // console.log("planned: ", plannedSeries);
+    // console.log("realized: ", realizedSeries);
 
     const xWorkDays: number[] = [];
     for (let i = 1; i <= workedDays; i++) {
@@ -88,14 +90,17 @@ const MultiLineChart = ({
       options: {
         ...prevData.options,
         xaxis: {
-          categories: xWorkDays, // Atualizando os dias de trabalho
+          categories: xWorkDays,
+          title: {
+            text: "Dias úteis",
+          },
         },
       },
     }));
   }, [workedDays, plannedSeries, realizedSeries]); // Dependências para re-executar o efeito sempre que essas props mudarem
 
   return (
-    <div>
+    <div className="w-1/2">
       <div id="chart">
         <ReactApexChart
           options={chartData.options}
@@ -104,9 +109,8 @@ const MultiLineChart = ({
           height={350}
         />
       </div>
-      <div id="html-dist"></div>
     </div>
   );
 };
 
-export default MultiLineChart;
+export default LineChart;

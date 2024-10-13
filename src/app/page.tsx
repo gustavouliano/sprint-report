@@ -1,7 +1,7 @@
 "use client";
 
 import { Sprint } from "@/@types/sprint";
-import { convertDate } from "@/util/convertDate";
+import { convertDateShow } from "@/util/convertDateShow";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -57,8 +57,8 @@ export default function Home() {
               className="list-group-item d-flex justify-between align-items-center"
             >
               <span>
-                {sprint.name} | {convertDate(sprint.startDate)} -{" "}
-                {convertDate(sprint.endDate)}
+                {sprint.name} | {convertDateShow(sprint.startDate)} -{" "}
+                {convertDateShow(sprint.endDate)}
               </span>
               <span>
                 <button
