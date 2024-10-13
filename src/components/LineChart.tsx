@@ -65,9 +65,6 @@ const LineChart = ({ workedDays, plannedSeries, realizedSeries }: Props) => {
   });
 
   useEffect(() => {
-    // console.log("planned: ", plannedSeries);
-    // console.log("realized: ", realizedSeries);
-
     const xWorkDays: number[] = [];
     for (let i = 1; i <= workedDays; i++) {
       xWorkDays.push(i);
