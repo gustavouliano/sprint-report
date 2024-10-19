@@ -36,6 +36,30 @@ const LineChart = ({ workedDays, plannedSeries, realizedSeries }: Props) => {
       colors: ["#FF5733", "#2E93fA"],
       dataLabels: {
         enabled: true,
+        formatter: function (val: number, opt) {
+          console.log('a');
+          let seriesList = [];
+          // SeriesIndex = 0 -- Série planejada | 1 -- Série realizada 
+          if (opt.seriesIndex == 0) {
+            seriesList = plannedSeries;
+            const valIndex = opt.dataPointIndex;
+            if (valIndex == 0){
+              return 0;
+            }
+            const prevValue = seriesList[valIndex - 1];
+            return prevValue - val;
+          }
+          else{
+            seriesList = realizedSeries;
+            const valIndex = opt.dataPointIndex;
+            if (valIndex == 0) {
+              return plannedSeries[valIndex] - realizedSeries[valIndex];
+            }
+            const prevValue = seriesList[valIndex - 1];
+            return prevValue - val;
+          }
+          return `${val.toFixed(1)}%`;
+        },
       },
       stroke: {
         curve: "straight",

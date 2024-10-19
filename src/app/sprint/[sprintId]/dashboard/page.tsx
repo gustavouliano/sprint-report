@@ -55,7 +55,7 @@ export default function Page({ params }: { params: { sprintId: string } }) {
         }
       }
       const taskClosedData = taskInfo.closed_on;
-      console.log(taskClosedData);
+      // console.log(taskClosedData);
       const closedDay = workingDays(sprint.startDate, taskClosedData);
       if (closedDay > workedDays) {
         return;
@@ -172,11 +172,14 @@ export default function Page({ params }: { params: { sprintId: string } }) {
         </p>
       </div>
       <div className="bg-white shadow-md rounded-lg p-6 flex space-x-2">
-        <LineChart
-          workedDays={workingDays(sprint.startDate, sprint.endDate)}
-          plannedSeries={tasksSeries}
-          realizedSeries={tasksRealizedSeries}
-        />
+        {
+          tasksSeries.length && tasksRealizedSeries.length && 
+          <LineChart
+            workedDays={workingDays(sprint.startDate, sprint.endDate)}
+            plannedSeries={tasksSeries}
+            realizedSeries={tasksRealizedSeries}
+          />
+        }
         {assignedTasks.size > 0 && (
           <PieChart
             labels={assignedTasks.keys().toArray()}

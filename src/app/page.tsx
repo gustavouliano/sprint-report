@@ -22,7 +22,11 @@ export default function Home() {
   };
 
   const handleDashboard = (id: string) => {
-    router.push(`/sprint/dashboard/${id}`);
+    router.push(`/sprint/${id}/dashboard`);
+  };
+
+  const handleInfo = (id: string) => {
+    router.push(`/sprint/${id}`);
   };
 
   const handleLoadSprints = () => {
@@ -47,7 +51,7 @@ export default function Home() {
       >
         Criar Sprint
       </button>
-      <ul className="list-group w-1/2 mt-4">
+      <ul className="list-group w-3/5 mt-4">
         {sprints.length === 0 ? (
           <p>Não há sprints disponíveis.</p>
         ) : (
@@ -67,6 +71,13 @@ export default function Home() {
                   onClick={() => handleDashboard(sprint.id)}
                 >
                   Dashboard
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary ml-2"
+                  onClick={() => handleInfo(sprint.id)}
+                >
+                  Tasks
                 </button>
                 <button
                   type="button"
